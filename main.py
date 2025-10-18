@@ -1,24 +1,26 @@
-
-"""Classes for Product System"""
-class Product:
+"""Classes for Products"""
+class Product: #Абстрактный класс продуктов
     def __init__(self,product_id: int, name: str, price: float):
         self.product_id = product_id
         self.name = name
         self.price = price
     def update_price(self, new_price: float):
         self.price = new_price
-class Electronic(Product):
+
+class Electronic(Product): #Абстрактный класс электроники
     def __init__(self, product_id: int, name: str, price:float, model : str, power: float ):
         super().__init__(product_id, name,price)
         self.model = model
         self.power = power
-class Smartphone(Electronic):
+
+class Smartphone(Electronic): #Класс телефонов
     def __init__(self, product_id: int, name: str,price:float, model : str, power: float, memory:int, battery:int, os:str ):
         super().__init__(product_id,name,price,model,power)
         self.os = os
         self.battery = battery
         self.memory = memory
-class Laptop(Electronic):
+
+class Laptop(Electronic): #Класс ноутбуков
     def __init__(self, product_id: int, name: str,price:float, model : str, power: float, ram: int, processor:str,storage:int,screenSize: str):
         super().__init__(product_id,name,price,model,power)
         self.ram = ram
@@ -26,7 +28,7 @@ class Laptop(Electronic):
         self.storage = storage
         self.screenSize = screenSize
 
-"""Classes for Storage system"""
+"""Classes for Storage System"""
 class ShelfCell:
     def __init__(self,cell_id:int, max_quantity:int):
         self.cell_id = cell_id
@@ -164,19 +166,59 @@ class StockManager:
                         return True
         return quantity == 0
 
-laptop = Laptop(1, "Ноутбук Lenovo",10200, "Lenovo",220 , 16, "Intel-Core5",512, "1920x1024")
-warehouse = Warehouse(1,"Первый склад")
-shelf1 = Shelf(1,num_cells=3,cell_capacity=10)
-shelf2 = Shelf(2,num_cells=2,cell_capacity=5)
-warehouse.add_shelf(shelf1)
-warehouse.add_shelf(shelf2)
+"""Classes for Users System"""
+class User:
+    def __init__(self,user_id: int, name: str, surname: str, email: str, password: str):
+        self.user_id = user_id
+        self.name = name
+        self.surname = surname
+        self.addresses = []
+        self.email = email
+        self.password = password
+        self.cart = Cart(self)
+        self.orders = []
 
-manager = StockManager(warehouse)
-manager.replenish(laptop,18)
+    def add_address(self, address):
+        self.addresses.append(address)
 
-print(warehouse.find_product(laptop))
-print(manager.check_stock(laptop))
+    def make_an_order(self):
+        if self.cart.is_empty():
+            print("Корзина пустая")
+            return None
+        order = Order(self,self.cart)
+        self.orders.append(order)
+        self.cart.clear()
+        return order
 
-manager.reserve(laptop,1)
+class Cart:
+    def __init__(self,user: User):
+        self.user = user
+        self.items = {}
+        self.cost = 0
+    def add_item(self,product: Product, quantity: int):
+        self.items[product.product_id] = self.items.get(product.product_id,0) + quantity
+        self.cost += quantity * product.price
 
-print(manager.check_stock(laptop))
+    def remove_item(self,product: Product):
+        if product.product_id in self.items:
+            self.cost -= self.items[product.product_id].items()[0] * product.price
+            del self.items[product.product_id]
+
+    def clear(self):
+        self.cost = 0
+        self.items = {}
+
+    def is_empty(self):
+        return self.items == {}
+
+    def get_cost(self):
+        return self.cost
+
+class Order:
+    def __init__(self,user: User,cart: Cart):
+        self.user = user
+        self.items = cart.items
+        self.status = "Создан"
+        self.cost = cart.cost
+    def update_status(self,new_status:str):
+        self.status = new_status
