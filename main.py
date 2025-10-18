@@ -8,22 +8,23 @@ class Product:
     def update_price(self, new_price: float):
         self.price = new_price
 class Electronic(Product):
-    def __init__(self, product_id: int, name: str, model : str, power: float ):
-        super().__init__(product_id, name)
+    def __init__(self, product_id: int, name: str, price:float, model : str, power: float ):
+        super().__init__(product_id, name,price)
         self.model = model
         self.power = power
 class Smartphone(Electronic):
-    def __init__(self, product_id: int, name: str, model : str, power: float, memory:int, battery:int, os:str ):
-        super().__init__(product_id,name,model,power)
+    def __init__(self, product_id: int, name: str,price:float, model : str, power: float, memory:int, battery:int, os:str ):
+        super().__init__(product_id,name,price,model,power)
         self.os = os
         self.battery = battery
         self.memory = memory
 class Laptop(Electronic):
-    def __init__(self, product_id: int, name: str, model : str, power: float, ram: int, processor:str,storage:int,screenSize:int):
-        super().__init__(product_id,name,model,power)
+    def __init__(self, product_id: int, name: str,price:float, model : str, power: float, ram: int, processor:str,storage:int,screenSize: str):
+        super().__init__(product_id,name,price,model,power)
         self.ram = ram
         self.processor = processor
         self.storage = storage
+        self.screenSize = screenSize
 
 """Classes for Storage system"""
 class ShelfCell:
@@ -112,7 +113,6 @@ class Warehouse:
     def get_stock(self,product: Product) -> int:
         totalAmount = 0
         for shelf in self.shelves:
-            if shelf.product and shelf.product.product_id == product.product_id:
                 totalAmount += shelf.all_available(product)
         return totalAmount
 
@@ -138,7 +138,7 @@ class StockManager:
             if quantity == 0:
                 break
             reserved = min(shelf.all_available(product),quantity)
-            shelf.remove_product(product,reserved)
+            shelf.get_product(product,reserved)
             quantity -= reserved
         return quantity == 0
 
@@ -164,3 +164,19 @@ class StockManager:
                         return True
         return quantity == 0
 
+laptop = Laptop(1, "Ноутбук Lenovo",10200, "Lenovo",220 , 16, "Intel-Core5",512, "1920x1024")
+warehouse = Warehouse(1,"Первый склад")
+shelf1 = Shelf(1,num_cells=3,cell_capacity=10)
+shelf2 = Shelf(2,num_cells=2,cell_capacity=5)
+warehouse.add_shelf(shelf1)
+warehouse.add_shelf(shelf2)
+
+manager = StockManager(warehouse)
+manager.replenish(laptop,18)
+
+print(warehouse.find_product(laptop))
+print(manager.check_stock(laptop))
+
+manager.reserve(laptop,1)
+
+print(manager.check_stock(laptop))
