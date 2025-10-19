@@ -241,7 +241,7 @@ manager = StockManager(warehouse1)
 
 manager.replenish(product2,12)
 manager.replenish(product1,12)
-manager.replenish(product2,20)
+manager.replenish(product2,21)
 print(warehouse1.find_product(product1))
 print(warehouse1.find_product(product2))
 print(manager.check_stock(product2))
