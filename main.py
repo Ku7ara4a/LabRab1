@@ -45,7 +45,7 @@ class ShelfCell:
             return False
         elif self.product.product_id==product.product_id:
             if self.quantity + quantity <= self.max_quantity:
-                self.product = product
+                self.quantity += quantity
                 return True
             return False
         else:
@@ -65,7 +65,7 @@ class ShelfCell:
 class Shelf:
     def __init__(self, shelf_id: int, num_cells: int, cell_capacity: int):
         self.shelf_id = shelf_id
-        self.cells = [ShelfCell(i,cell_capacity) for i in range(num_cells)]
+        self.cells = [ShelfCell(i+1,cell_capacity) for i in range(num_cells)]
 
     def add_product(self,product: Product,quantity: int) -> int:
         for cell in self.cells:
@@ -76,8 +76,8 @@ class Shelf:
                     cell.store(product,spaceToStore)
                     quantity -= spaceToStore
                 if quantity == 0:
-                    return 0
-        return quantity
+                    return True
+        return quantity == 0
 
     def get_product(self,product: Product,quantity:int) -> bool:
         for cell in self.cells:
@@ -104,6 +104,7 @@ class Warehouse:
 
     def add_shelf(self,shelf: Shelf):
         self.shelves.append(shelf)
+
     def get_shelfnum(self,id: int) -> int:
         i = 0
         for shelf in self.shelves:
@@ -145,26 +146,29 @@ class StockManager:
         return quantity == 0
 
     def replenish(self,product: Product,quantity: int) -> bool:
-        if self.warehouse.get_stock(product) == 0:
-            for shelf in self.warehouse.shelves:
-                if quantity == 0:
-                    break
-                added = shelf.add_product(product,quantity)
-                if added == 0:
-                    return True
-        else:
-            shelfThatHave = self.warehouse.shelves[self.warehouse.find_product(product)[0]]
-            if shelfThatHave.add_product(product,quantity) == 0:
-                return True
-            else:
-                new_quantity = shelfThatHave.add_product(product, quantity)
-                for shelf in self.warehouse.shelves:
-                    if new_quantity == 0:
-                        break
-                    added = shelf.add_product(product,new_quantity)
-                    if added == 0:
-                        return True
-        return quantity == 0
+        remaining = quantity
+        for shelf in self.warehouse.shelves:
+            for cell in shelf.cells:
+                if cell.product and cell.product.product_id == product.product_id:
+                    space = cell.max_quantity - cell.quantity
+                    to_add = min(space,remaining)
+                    if to_add > 0:
+                        print(cell.cell_id, to_add)
+                        cell.store(product,to_add)
+                        remaining -= to_add
+                        if remaining == 0:
+                            return True
+        for shelf in self.warehouse.shelves:
+            for cell in shelf.cells:
+                if cell.product is None and cell.isAvailable():
+                    space = cell.max_quantity - cell.quantity
+                    to_add = min(space,remaining)
+                    if to_add > 0:
+                        cell.store(product,to_add)
+                        remaining -= to_add
+                        if remaining == 0:
+                            return True
+        return remaining == 0
 
 """Classes for Users System"""
 class User:
@@ -220,5 +224,28 @@ class Order:
         self.items = cart.items
         self.status = "Создан"
         self.cost = cart.cost
+
     def update_status(self,new_status:str):
         self.status = new_status
+
+product1 = Laptop(1,"Ноутбук Lenovo",10240,"Lenovo-001",220,16,"Intel-Core5",512,"1920х1024")
+product2 = Smartphone(2,"Телефон Апле",1000000,"Iphone Alot Pro",20,256,6000,"IOS")
+
+warehouse1 = Warehouse(1,"Первый склад")
+shelf1 = Shelf(1,5,5)
+shelf2 = Shelf(2,10,3)
+warehouse1.add_shelf(shelf1)
+warehouse1.add_shelf(shelf2)
+
+manager = StockManager(warehouse1)
+
+manager.replenish(product2,12)
+manager.replenish(product1,12)
+manager.replenish(product2,20)
+print(warehouse1.find_product(product1))
+print(warehouse1.find_product(product2))
+print(manager.check_stock(product2))
+
+manager.reserve(product1,10)
+print(warehouse1.find_product(product1))
+
