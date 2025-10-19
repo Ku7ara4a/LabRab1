@@ -114,21 +114,14 @@ class Shelf:
 
 
 class Warehouse:
-    def __init__(self, warehouse_id: int, name: str,address:Address):
+    def __init__(self, warehouse_id: int, name: str,address_name:str):
         self.warehouse_id = warehouse_id
         self.name = name
         self.shelves = []
+        self.address_name = address_name
 
     def add_shelf(self, shelf: Shelf):
         self.shelves.append(shelf)
-
-    def get_shelfnum(self, id_of_shelf: int) -> int:
-        i = 0
-        for shelf in self.shelves:
-            if shelf.shelf_id == id_of_shelf:
-                return i
-            i += 1
-        return 0
 
     def get_stock(self, product: Product) -> int:
         total_amount = 0
@@ -171,7 +164,6 @@ class StockManager:
                     space = cell.max_quantity - cell.quantity
                     to_add = min(space, remaining)
                     if to_add > 0:
-                        print(cell.cell_id, to_add)
                         cell.store(product, to_add)
                         remaining -= to_add
                         if remaining == 0:
@@ -186,62 +178,6 @@ class StockManager:
                         remaining -= to_add
                         if remaining == 0:
                             return True
+        print(f"{product.name} не помещается на склад {self.warehouse.name}, оставшееся количество : {remaining}!!!!")
         return remaining == 0
 
-
-"""Classes for Users System"""
-class User:
-    def __init__(self, user_id: int, name: str, surname: str, email: str, password: str,address_name: str):
-        self.user_id = user_id
-        self.name = name
-        self.surname = surname
-        self.address = address_name
-        self.email = email
-        self.password = password
-        self.cart = Cart(self)
-        self.orders = []
-
-    def make_an_order(self):
-        if self.cart.is_empty():
-            print("Корзина пустая")
-            return None
-        order = Order(self, self.cart)
-        self.orders.append(order)
-        self.cart.clear()
-        return order
-
-class Cart:
-    def __init__(self, user: User):
-        self.user = user
-        self.items = {}
-        self.cost = 0
-
-    def add_item(self, product: Product, quantity: int):
-        self.items[product.product_id] = self.items.get(product.product_id, 0) + quantity
-        self.cost += quantity * product.price
-
-    def remove_item(self, product: Product):
-        if product.product_id in self.items:
-            self.cost -= self.items[product.product_id].items()[0] * product.price
-            del self.items[product.product_id]
-
-    def clear(self):
-        self.cost = 0
-        self.items = {}
-
-    def is_empty(self):
-        return self.items == {}
-
-    def get_cost(self):
-        return self.cost
-
-
-class Order:
-    def __init__(self, user: User, cart: Cart):
-        self.user = user
-        self.items = cart.items
-        self.status = "Создан"
-        self.cost = cart.cost
-
-    def update_status(self, new_status: str):
-        self.status = new_status
