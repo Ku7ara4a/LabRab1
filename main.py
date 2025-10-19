@@ -21,12 +21,12 @@ class Smartphone(Electronic): #Класс телефонов
         self.memory = memory
 
 class Laptop(Electronic): #Класс ноутбуков
-    def __init__(self, product_id: int, name: str,price:float, model : str, power: float, ram: int, processor:str,storage:int,screenSize: str):
+    def __init__(self, product_id: int, name: str,price:float, model : str, power: float, ram: int, processor:str,storage:int,screen_size: str):
         super().__init__(product_id,name,price,model,power)
         self.ram = ram
         self.processor = processor
         self.storage = storage
-        self.screenSize = screenSize
+        self.screen_size = screen_size
 
 """Classes for Storage System"""
 class ShelfCell:
@@ -59,7 +59,7 @@ class ShelfCell:
             return True
         return False
 
-    def isAvailable(self) -> bool:
+    def is_available(self) -> bool:
         return self.quantity < self.max_quantity
 
 class Shelf:
@@ -69,12 +69,12 @@ class Shelf:
 
     def add_product(self,product: Product,quantity: int) -> int:
         for cell in self.cells:
-            if cell.isAvailable() and (cell.product is None or cell.product.product_id == product.product_id):
-                spaceAvailable = cell.max_quantity - cell.quantity
-                spaceToStore = min(spaceAvailable,quantity)
-                if spaceToStore > 0:
-                    cell.store(product,spaceToStore)
-                    quantity -= spaceToStore
+            if cell.is_available() and (cell.product is None or cell.product.product_id == product.product_id):
+                space_available = cell.max_quantity - cell.quantity
+                space_to_store = min(space_available,quantity)
+                if space_to_store > 0:
+                    cell.store(product,space_to_store)
+                    quantity -= space_to_store
                 if quantity == 0:
                     return True
         return quantity == 0
@@ -90,11 +90,11 @@ class Shelf:
         return quantity == 0
 
     def all_available(self,product: Product) -> int:
-        totalAmount = 0
+        total_amount = 0
         for cell in self.cells:
             if cell.product and cell.product.product_id == product.product_id:
-                totalAmount += cell.quantity
-        return totalAmount
+                total_amount += cell.quantity
+        return total_amount
 
 class Warehouse:
     def __init__(self,warehouse_id: int, name : str):
@@ -105,27 +105,27 @@ class Warehouse:
     def add_shelf(self,shelf: Shelf):
         self.shelves.append(shelf)
 
-    def get_shelfnum(self,id: int) -> int:
+    def get_shelfnum(self,id_of_shelf: int) -> int:
         i = 0
         for shelf in self.shelves:
-            if shelf.shelf_id == id:
+            if shelf.shelf_id == id_of_shelf:
                 return i
             i+=1
         return 0
 
     def get_stock(self,product: Product) -> int:
-        totalAmount = 0
+        total_amount = 0
         for shelf in self.shelves:
-                totalAmount += shelf.all_available(product)
-        return totalAmount
+                total_amount += shelf.all_available(product)
+        return total_amount
 
     def find_product(self,product: Product):
-        cellsOfProduct = []
+        cells_of_product = []
         for shelf in self.shelves:
             for cell in shelf.cells:
                 if cell.product and cell.product.product_id == product.product_id:
-                    cellsOfProduct.append((shelf.shelf_id,cell.cell_id,cell.quantity))
-        return cellsOfProduct
+                    cells_of_product.append((shelf.shelf_id,cell.cell_id,cell.quantity))
+        return cells_of_product
 
 class StockManager:
     def __init__(self,warehouse: Warehouse):
@@ -160,7 +160,7 @@ class StockManager:
                             return True
         for shelf in self.warehouse.shelves:
             for cell in shelf.cells:
-                if cell.product is None and cell.isAvailable():
+                if cell.product is None and cell.is_available():
                     space = cell.max_quantity - cell.quantity
                     to_add = min(space,remaining)
                     if to_add > 0:
@@ -199,6 +199,7 @@ class Cart:
         self.user = user
         self.items = {}
         self.cost = 0
+
     def add_item(self,product: Product, quantity: int):
         self.items[product.product_id] = self.items.get(product.product_id,0) + quantity
         self.cost += quantity * product.price
