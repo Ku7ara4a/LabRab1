@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<addresses><address><name>H1</name><position>10</position><spec>Living</spec></address><address><name>H2</name><position>20</position><spec>Living</spec></address><address><name>H3</name><position>30</position><spec>Living</spec></address><address><name>WH1</name><position>0</position><spec>Warehouse</spec></address><address><name>WH2</name><position>40</position><spec>Warehouse</spec></address></addresses>

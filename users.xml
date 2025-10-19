@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<users><user><user_id>1</user_id><name>Denis</name><surname>Chaban</surname><email>arxwoodj@gmail.com</email><password>notgonnasay</password><address_name>H1</address_name></user><user><user_id>2</user_id><name>Ivan</name><surname>Ivanov</surname><email>IvanovIvanIvanovich@ivan.ru</email><password>Vanya</password><address_name>H2</address_name></user><user><user_id>3</user_id><name>IDK</name><surname>IDKOVICH</surname><email>ILostMyCreativity@sad.com</email><password>Smth</password><address_name>H3</address_name></user></users>
