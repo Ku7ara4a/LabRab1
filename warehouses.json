@@ -1,0 +1,128 @@
+{
+    "warehouses": [
+        {
+            "warehouse_id": 1,
+            "name": "Warehouse1",
+            "address_name": "WH1",
+            "shelves": [
+                {
+                    "shelf_id": 1,
+                    "cells": [
+                        {
+                            "cell_id": 1,
+                            "product_id": 2,
+                            "quantity": 10,
+                            "max_quntity": 10
+                        },
+                        {
+                            "cell_id": 2,
+                            "product_id": 2,
+                            "quantity": 10,
+                            "max_quntity": 10
+                        },
+                        {
+                            "cell_id": 3,
+                            "product_id": 2,
+                            "quantity": 10,
+                            "max_quntity": 10
+                        }
+                    ]
+                },
+                {
+                    "shelf_id": 3,
+                    "cells": [
+                        {
+                            "cell_id": 1,
+                            "product_id": 2,
+                            "quantity": 3,
+                            "max_quntity": 3
+                        },
+                        {
+                            "cell_id": 2,
+                            "product_id": 2,
+                            "quantity": 3,
+                            "max_quntity": 3
+                        },
+                        {
+                            "cell_id": 3,
+                            "product_id": 2,
+                            "quantity": 3,
+                            "max_quntity": 3
+                        },
+                        {
+                            "cell_id": 4,
+                            "product_id": 2,
+                            "quantity": 3,
+                            "max_quntity": 3
+                        },
+                        {
+                            "cell_id": 5,
+                            "product_id": 2,
+                            "quantity": 3,
+                            "max_quntity": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "warehouse_id": 2,
+            "name": "Warehouse2",
+            "address_name": "WH2",
+            "shelves": [
+                {
+                    "shelf_id": 2,
+                    "cells": [
+                        {
+                            "cell_id": 1,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 4
+                        },
+                        {
+                            "cell_id": 2,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 4
+                        },
+                        {
+                            "cell_id": 3,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 4
+                        },
+                        {
+                            "cell_id": 4,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 4
+                        },
+                        {
+                            "cell_id": 5,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 4
+                        }
+                    ]
+                },
+                {
+                    "shelf_id": 4,
+                    "cells": [
+                        {
+                            "cell_id": 1,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 5
+                        },
+                        {
+                            "cell_id": 2,
+                            "product_id": null,
+                            "quantity": 0,
+                            "max_quantity": 5
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

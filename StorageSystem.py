@@ -1,4 +1,9 @@
 #Address Class
+import json
+import os
+from itertools import product
+
+
 class Address:
     def __init__(self, name: str, pos: float,spec: str):
         self.name = name
@@ -52,6 +57,7 @@ class ShelfCell:
         self.product = None
 
     def store(self, product: Product, quantity: int) -> bool:
+
         if self.product is None:
             if quantity <= self.max_quantity:
                 self.product = product
@@ -136,11 +142,33 @@ class Warehouse:
                 if cell.product and cell.product.product_id == product.product_id:
                     cells_of_product.append((shelf.shelf_id, cell.cell_id, cell.quantity))
         return cells_of_product
+    def to_dict(self,product: Product):
+        return {
+            "warehouse_id": self.warehouse_id,
+            "name": self.name,
+            "address_name": self.address_name,
+            "shelves": [
+                {
+                    "shelf_id":shelf.shelf_id,
+                    "cells": [
+                        {
+                            "cell_id": cell.cell_id,
+                            "product_id": product.product_id if cell.product else None,
+                            "quantity": cell.quantity,
+                            "max_quntity" : cell.max_quantity,
+                        }
+                        for cell in shelf.cells
+                    ]
+                }
+                for shelf in self.shelves
+            ]
+        }
 
 
 class StockManager:
     def __init__(self, warehouse: Warehouse):
         self.warehouse = warehouse
+        self.data_file= "warehouses.json"
 
     def check_stock(self, product: Product) -> int:
         return self.warehouse.get_stock(product)
@@ -167,6 +195,7 @@ class StockManager:
                         cell.store(product, to_add)
                         remaining -= to_add
                         if remaining == 0:
+                            self.save_to_json(product)
                             return True
         for shelf in self.warehouse.shelves:
             for cell in shelf.cells:
@@ -177,7 +206,24 @@ class StockManager:
                         cell.store(product, to_add)
                         remaining -= to_add
                         if remaining == 0:
+                            self.save_to_json(product)
                             return True
+        self.save_to_json(product)
         print(f"{product.name} не помещается на склад {self.warehouse.name}, оставшееся количество : {remaining}!!!!")
         return remaining == 0
+
+    def save_to_json(self,product : Product):
+        from FileManager import save_storage_data, load_storage_data
+        data = load_storage_data()
+        warehouse_dict = self.warehouse.to_dict(product)
+        existing = False
+        for i,wh in enumerate(data["warehouses"]):
+            if wh["warehouse_id"] == self.warehouse.warehouse_id:
+                data["warehouses"][i] = warehouse_dict
+                existing = True
+                break
+        if not existing:
+            data["warehouses"].append(warehouse_dict)
+        save_storage_data(data)
+
 
