@@ -226,27 +226,8 @@ class Order:
         self.status = "Создан"
         self.cost = cart.cost
 
+
     def update_status(self,new_status:str):
         self.status = new_status
 
-product1 = Laptop(1,"Ноутбук Lenovo",10240,"Lenovo-001",220,16,"Intel-Core5",512,"1920х1024")
-product2 = Smartphone(2,"Телефон Апле",1000000,"Iphone Alot Pro",20,256,6000,"IOS")
-
-warehouse1 = Warehouse(1,"Первый склад")
-shelf1 = Shelf(1,5,5)
-shelf2 = Shelf(2,10,3)
-warehouse1.add_shelf(shelf1)
-warehouse1.add_shelf(shelf2)
-
-manager = StockManager(warehouse1)
-
-manager.replenish(product2,12)
-manager.replenish(product1,12)
-manager.replenish(product2,21)
-print(warehouse1.find_product(product1))
-print(warehouse1.find_product(product2))
-print(manager.check_stock(product2))
-
-manager.reserve(product1,10)
-print(warehouse1.find_product(product1))
 
