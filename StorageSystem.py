@@ -190,9 +190,13 @@ class Warehouse:
 
 
 class StockManager:
+    _stock_manager_id_ = 0
     def __init__(self, warehouse: Warehouse):
+        StockManager._stock_manager_id_ +=1
+        self.stock_manager_id = StockManager._stock_manager_id_
         self.warehouse = warehouse
         self.data_file= "warehouses.json"
+        StockManagerRegistry().register(self)
 
     def check_stock(self, product_id: int) -> int:
         return self.warehouse.get_stock(product_id)
@@ -364,3 +368,27 @@ class GlobalStockManager:
             return True
         print(f"Недостаточно {product.name} на всех складах для снятия с резерва")
         return False
+
+"""Satatic class for StockManagers saving to file"""
+class StockManagerRegistry:
+    _instance = None
+    _stock_managers = {}
+    _warehouse_to_manager = {}
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def register(self, stock_manager: StockManager):
+        self._stock_managers[stock_manager.stock_manager_id] = stock_manager
+        self._warehouse_to_manager[stock_manager.warehouse.warehouse_id] = stock_manager
+
+    def get(self, stock_manager_id: int) -> StockManager:
+        return self._stock_managers.get(stock_manager_id)
+
+    def get_by_warehouse_id(self, warehouse_id: int) -> StockManager:
+        return self._warehouse_to_manager.get(warehouse_id)
+
+    def get_all(self):
+        return self._stock_managers.values()

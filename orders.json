@@ -1,0 +1,28 @@
+{
+    "1": {
+        "order_id": 1,
+        "user_id": 1,
+        "status": "Отменён",
+        "date": "2025-10-21T01:08:24.208509",
+        "items": {
+            "1": 10,
+            "2": 3
+        },
+        "cost": 1110400,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "2": {
+        "order_id": 2,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T01:09:00.991955",
+        "items": {
+            "1": 10,
+            "2": 3
+        },
+        "cost": 1110400,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    }
+}
