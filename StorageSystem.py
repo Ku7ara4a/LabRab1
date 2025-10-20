@@ -216,9 +216,8 @@ class StockManager:
             return False
         return True
 
-    def finalize_reservation(self,product: Product, quantity: int) -> bool:
+    def finalize_reservation(self,product_id, quantity: int) -> bool:
         remaining = quantity
-        product_id = product.product_id
         for shelf in self.warehouse.shelves:
             for cell in shelf.cells:
                 if cell.product and cell.product.product_id == product_id:
@@ -236,7 +235,7 @@ class StockManager:
                                 return True
         self.save_to_json()
         if remaining > 0:
-            print(f"Не удалось снять {product.name} в количестве {remaining} с резервации")
+            print(f"Не удалось снять товар с айди {product_id} в количестве {remaining} с резервации")
             return False
         return True
 

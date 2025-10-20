@@ -22,6 +22,14 @@
             "battery": 6000,
             "memory": 256,
             "os": "MOC"
+        },
+        {
+            "product_id": 3,
+            "name": "Видеокарта",
+            "price": 55000,
+            "specific": "Electronic",
+            "model": "RTX-5090",
+            "power": 575
         }
     ]
 }

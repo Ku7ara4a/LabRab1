@@ -32,6 +32,7 @@ class User:
                     stock_manager.release_reservation(product_id, quantity)
                     return False
                 order = Order(self,stock_manager)
+                self.orders.append(order)
                 return True
         return False
 
@@ -72,9 +73,22 @@ class Order:
         self.items = user.cart.items
         self.status = "Создан"
         self.cost = user.cart.cost
+        self.stock_manager = stock_manager
         for item in self.items.keys():
             print(f"Товар c айди {item} в количестве {self.items[item]}шт. был зарезервирован "
                   f"для заказа пользователя {user.name}")
 
-    def update_status(self, new_status: str):
-        self.status = new_status
+    def cancel_order(self):
+        self.status = "Отменён"
+        for item in self.items.keys():
+            product_id = item
+            quantity = self.items[item]
+            self.stock_manager.release_reservation(product_id, quantity)
+
+    def finish_order(self):
+        self.status = "Получен"
+        for item in self.items.keys():
+            product_id = item
+            quantity = self.items[item]
+            self.stock_manager.finalize_reservation(product_id, quantity)
+

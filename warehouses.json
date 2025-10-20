@@ -14,7 +14,7 @@
                             "product_name": "Ноутбук Леново",
                             "quantity": 10,
                             "max_quantity": 10,
-                            "reserved": 7
+                            "reserved": 10
                         },
                         {
                             "cell_id": 2,
@@ -22,7 +22,7 @@
                             "product_name": "Ноутбук Леново",
                             "quantity": 10,
                             "max_quantity": 10,
-                            "reserved": 0
+                            "reserved": 4
                         },
                         {
                             "cell_id": 3,

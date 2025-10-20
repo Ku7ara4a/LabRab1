@@ -45,10 +45,12 @@ product_manager = ProductManager()
 
 product1 = Laptop(1,"Ноутбук Леново",100240,"LapTop-001",220,16,"Intel-CoreI5",512,"1920x1024")
 product2 = Smartphone(2,"Телефон Крутофон",36000,"VeryCleverPhone",20,256,6000,"MOC")
+product3 = Electronic(3,"Видеокарта",55000,"RTX-5090",575)
 
 #Adding product to manager
 product_manager.add_product(product1)
 product_manager.add_product(product2)
+product_manager.add_product(product3)
 
 #Making manager to controll warehouses
 manager1 = StockManager(warehouses[0])
@@ -82,8 +84,10 @@ for wh in warehouses:
 
 #Making an order
 Denis = users[0]
-Denis.add_product_to_cart(product1, 7)
+Denis.add_product_to_cart(product1, 14)
 Denis.make_an_order(manager1)
+input()
+Denis.orders[0].finish_order()
 
 
 #Final saving
