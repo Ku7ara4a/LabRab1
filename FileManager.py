@@ -55,7 +55,7 @@ def load_single_users_from_xml(filename:str,user_id: int):
             surname = user_elem.find("surname").text
             email = user_elem.find("email").text
             password = user_elem.find("password").text
-            address_name = user_elem.find("addresses").text
+            address_name = user_elem.find("address_name").text
             user = User(loaded_user_id, name, surname, email, password, address_name)
     if user:
         print(f"Пользователь с айди {user_id} найден")
@@ -164,7 +164,7 @@ def load_storage_data():
             return data
     except json.JSONDecodeError as e:
         print(f"Ошибка чтения JSON: {e}")
-        print("Файл повреждён — возвращаю пустую структуру")
+        print("Файл повреждён, создаю пустой файл")
         return {"warehouses": []}
 
 def save_storage_data(data : dict):
@@ -180,8 +180,6 @@ def create_warehouse(warehouse: Warehouse):
     if any(wh["warehouse_id"] == warehouse_id for wh in data["warehouses"]):
         print("Склад существует, файл не перезаписан")
         return None
-        """raise ValueError(f"Склад с айди {warehouse_id} уже существует, пересоздайте файл warehouses " # если убрать Return, то будет выдавать преднаписанную ошибку
-                         f"или уберите часть кода с созданием складов")"""
     data["warehouses"].append({"warehouse_id": warehouse_id, "name": name, "address_name":address_name, "shelves": [] })
     print(f"Склад с айди {warehouse_id} был создан")
     print(data)
@@ -189,43 +187,48 @@ def create_warehouse(warehouse: Warehouse):
 
 """Creating one shelf in warehouse (JSON)"""
 def create_shelf(warehouse_id: int, shelf: Shelf):
-    shelf_id = shelf.shelf_id
-    num_cells = len(shelf.cells)
-    cell_capacity = shelf.cells[0].max_quantity
     data = load_storage_data()
+
     for wh in data["warehouses"]:
         if int(wh["warehouse_id"]) == warehouse_id:
-            if any(sh["shelf_id"] == shelf_id for sh in wh["shelves"]):
-                print("Полка существует, файл не перезаписан")
-                return None
-                """raise ValueError(f"Полка с айди {shelf_id} уже существует") # если убрать break, то будет выдавать преднаписанную ошибку"""
-            shelf = {
-                "shelf_id": shelf_id,
-                "cells" : [{"cell_id": i + 1, "product_id" : None , "quantity" : 0 , "max_quantity" : cell_capacity}
-                           for i in range(num_cells)],
-            }
-            wh["shelves"].append(shelf)
-            save_storage_data(data)
-            return shelf
-    raise ValueError(f"Склад с айди {warehouse_id} не найден")
+            shelf_exists = False
+            for i, existing_shelf in enumerate(wh["shelves"]):
+                if existing_shelf["shelf_id"] == shelf.shelf_id:
+                    for j, existing_cell in enumerate(existing_shelf["cells"]):
+                        if existing_cell["product_id"] is None:
+                            if j < len(shelf.cells):
+                                cell = shelf.cells[j]
+                                existing_shelf["cells"][j] = {
+                                    "cell_id": cell.cell_id,
+                                    "product_id": cell.product.product_id if cell.product else None,
+                                    "product_name": cell.product.name if cell.product else None,
+                                    "quantity": cell.quantity,
+                                    "max_quantity": cell.max_quantity,
+                                    "reserved": cell.reserved
+                                }
+                    shelf_exists = True
+                    break
+            if not shelf_exists:
+                shelf_dict = {
+                    "shelf_id": shelf.shelf_id,
+                    "cells": [
+                        {
+                            "cell_id": cell.cell_id,
+                            "product_id": cell.product.product_id if cell.product else None,
+                            "product_name": cell.product.name if cell.product else None,
+                            "quantity": cell.quantity,
+                            "max_quantity": cell.max_quantity,
+                            "reserved": cell.reserved
+                        }
+                        for cell in shelf.cells
+                    ]
+                }
+                wh["shelves"].append(shelf_dict)
 
-"""Updating cell"""
-def update_cell(warehouse_id:int, shelf_id:int, cell_id:int, product_id = None , quantity = 0):
-    data = load_storage_data()
-    for wh in data["warehouses"]:
-        if wh["warehouse_id"] == warehouse_id:
-            for shelf in wh["shelves"]:
-                if shelf["shelf_id"] == shelf_id:
-                    for cell in shelf["cells"]:
-                        if cell["cell_id"] == cell_id:
-                            if product_id is not None:
-                                cell["product_id"] = product_id
-                            if quantity > 0:
-                                cell["quantity"] = min(cell["max_quantity"], quantity)
-                            save_storage_data(data)
-                            return cell
-    print("Не удалось обновить ячейку")
-    return None
+            save_storage_data(data)
+            print(f"Полка {shelf.shelf_id} создана/обновлена на складе {warehouse_id}")
+            return
+    raise ValueError(f"Склад с айди {warehouse_id} не найден")
 
 """Searching in all of the warehouses"""
 def search_product(product_id:int):
@@ -240,6 +243,7 @@ def search_product(product_id:int):
                         "shelf_id": shelf["shelf_id"],
                         "cell_id": cell["cell_id"],
                         "quantity": cell["quantity"],
+                        "reserved": cell["reserved"]
                     })
     return locations
 
@@ -249,3 +253,95 @@ def get_total_stock(product_id:int):
     for location in search_product(product_id):
         total_quantity += location["quantity"]
     return total_quantity
+
+"""Working with product system"""
+
+PRODUCTS_FILE = "products.json"
+
+class ProductManager:
+    def __init__(self):
+        self.products = {}
+        self.load_products()
+
+    def load_products(self):
+        if not os.path.exists(PRODUCTS_FILE):
+            with open(PRODUCTS_FILE, "w",encoding="utf-8") as f:
+                json.dump({"products": []},f)
+        with open(PRODUCTS_FILE,"r",encoding="utf-8") as f:
+            data = json.load(f)
+        self.products.clear()
+        for p in data.get("products", []):
+            obj = self.dict_to_product(p)
+            self.products[obj.product_id] = obj
+
+    def save_products(self):
+        data = {"products": [self.product_to_dict(p) for p in self.products.values()]}
+        with open(PRODUCTS_FILE,"w",encoding="utf-8") as f:
+            json.dump(data,f,ensure_ascii=False,indent=4)
+
+    def add_product(self,product: Product):
+        self.products[product.product_id] = product
+        self.save_products()
+
+    def get_product(self, product_id:int):
+        return self.products.get(product_id)
+
+    def delete_product(self, product_id:int):
+        if product_id in self.products:
+            del self.products[product_id]
+            self.save_products()
+
+    def update_price(self, product_id, new_price):
+        product = self.get_product(product_id)
+        if product:
+            product.update_price(new_price)
+            self.save_products()
+
+    def dict_to_product(self, product):
+        if product["specific"] == "Smartphone":
+            return Smartphone(
+                product["product_id"],product["name"],product["price"],product["model"],
+                product["power"],product["memory"],product["battery"],product["os"]
+            )
+        elif product["specific"] == "Laptop":
+            return Laptop(
+                product["product_id"],product["name"],product["price"],product["model"],
+                product["power"],product["ram"],product["processor"],product["storage"],
+                product["screen_size"]
+            )
+        elif product["specific"] == "Electronic":
+            return Electronic(
+                product["product_id"],product["name"],product["price"],product["model"],
+                product["power"]
+            )
+        else :
+            return Product(
+                product["product_id"],product["name"],product["price"]
+            )
+    def product_to_dict(self, product):
+        base = {
+            "product_id": product.product_id,
+            "name": product.name,
+            "price": product.price,
+            "specific": product.__class__.__name__
+        }
+        if isinstance(product, Electronic):
+            base.update({
+                "model": product.model,
+                "power": product.power,
+            })
+        if isinstance(product, Smartphone):
+            base.update({
+                "battery": product.battery,
+                "memory": product.memory,
+                "os": product.os,
+
+            })
+        if isinstance(product, Laptop):
+            base.update({
+                "processor": product.processor,
+                "ram": product.ram,
+                "storage": product.storage,
+                "screen_size": product.screen_size,
+            })
+        return base

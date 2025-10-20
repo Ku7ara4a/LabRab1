@@ -32,7 +32,8 @@ class Cart:
 
     def remove_item(self, product: Product):
         if product.product_id in self.items:
-            self.cost -= self.items[product.product_id].items()[0] * product.price
+            quantity = self.items[product.product_id]
+            self.cost -= quantity * product.price
             del self.items[product.product_id]
 
     def clear(self):

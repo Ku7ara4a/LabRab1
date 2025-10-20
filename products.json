@@ -1,0 +1,27 @@
+{
+    "products": [
+        {
+            "product_id": 1,
+            "name": "Ноутбук Леново",
+            "price": 100240,
+            "specific": "Laptop",
+            "model": "LapTop-001",
+            "power": 220,
+            "processor": "Intel-CoreI5",
+            "ram": 16,
+            "storage": 512,
+            "screen_size": "1920x1024"
+        },
+        {
+            "product_id": 2,
+            "name": "Телефон Крутофон",
+            "price": 36000,
+            "specific": "Smartphone",
+            "model": "VeryCleverPhone",
+            "power": 20,
+            "battery": 6000,
+            "memory": 256,
+            "os": "MOC"
+        }
+    ]
+}
