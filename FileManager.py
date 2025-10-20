@@ -6,7 +6,7 @@ import os
 
 '''Working with users
 Saving users to XML'''
-def save_users_to_xml(users:list, filename:str):
+def save_users_to_xml(users:list, filename:str) -> None:
     root = ET.Element("users")
     for user in users:
         user_elem = ET.SubElement(root, "user")
@@ -21,14 +21,14 @@ def save_users_to_xml(users:list, filename:str):
     print(f"Пользователи сохранены в файл {filename}")
 
 '''Updating users'''
-def update_users_from_xml(new_users:list, filename: str):
+def update_users_from_xml(new_users:list, filename: str) -> None:
     users = load_users_from_xml(filename)
     users += new_users
     save_users_to_xml(users, filename)
     print(f'Список пользователей в {filename} обновлён')
 
 '''Loading users from XML'''
-def load_users_from_xml(filename:str):
+def load_users_from_xml(filename:str) -> list:
     tree = ET.parse(filename)
     root = tree.getroot()
     users = []
@@ -44,7 +44,7 @@ def load_users_from_xml(filename:str):
     return users
 
 """Load single user from XML"""
-def load_single_users_from_xml(filename:str,user_id: int):
+def load_single_users_from_xml(filename:str,user_id: int) -> User:
     tree = ET.parse(filename)
     root = tree.getroot()
     user : User
@@ -65,7 +65,7 @@ def load_single_users_from_xml(filename:str,user_id: int):
         return None
 
 """Delete user by ID"""
-def delete_user_by_id(user_id:int, filename:str):
+def delete_user_by_id(user_id:int, filename:str) -> None:
     users = load_users_from_xml(filename)
     root = ET.Element("users")
     for user in users:
@@ -84,7 +84,7 @@ def delete_user_by_id(user_id:int, filename:str):
 
 """Work with Addresses
 Loading Addresses from XML"""
-def load_addresses_from_xml(filename:str):
+def load_addresses_from_xml(filename:str) -> list:
     tree = ET.parse(filename)
     root = tree.getroot()
     addresses = []
@@ -97,14 +97,14 @@ def load_addresses_from_xml(filename:str):
     return addresses
 
 """Updating Addresses"""
-def update_addresses_from_xml(new_addresses:list, filename:str):
+def update_addresses_from_xml(new_addresses:list, filename:str) -> None:
     addresses = load_addresses_from_xml(filename)
     addresses += new_addresses
     saving_addresses_to_xml(addresses, filename)
     print(f"Список Адресов в {filename} обновлён")
 
 """Saving Addresses to XML"""
-def saving_addresses_to_xml(addresses:list, filename:str):
+def saving_addresses_to_xml(addresses:list, filename:str) -> None:
     root = ET.Element("addresses")
     for address in addresses:
         address_elem = ET.SubElement(root, "address")
@@ -116,7 +116,7 @@ def saving_addresses_to_xml(addresses:list, filename:str):
     print(f"Адреса сохранены в файл {filename}")
 
 """Loading single Address from XML"""
-def load_single_address_from_xml(filename:str, address_name : str):
+def load_single_address_from_xml(filename:str, address_name : str) -> Address or None:
     tree = ET.parse(filename)
     root = tree.getroot()
     address : Address = None
@@ -134,7 +134,7 @@ def load_single_address_from_xml(filename:str, address_name : str):
         return None
 
 """Deliting Address by name"""
-def deleting_address_by_name(name:str, filename:str):
+def deleting_address_by_name(name:str, filename:str) -> None:
     addresses = load_addresses_from_xml(filename)
     root = ET.Element("addresses")
     for address in addresses:
@@ -151,7 +151,7 @@ def deleting_address_by_name(name:str, filename:str):
 
 storage_data = "warehouses.json"
 
-def load_storage_data():
+def load_storage_data() -> dict:
     if not os.path.exists(storage_data):
         print("Файл не существует, создаю заново")
         return {"warehouses": []}
@@ -167,12 +167,12 @@ def load_storage_data():
         print("Файл повреждён, создаю пустой файл")
         return {"warehouses": []}
 
-def save_storage_data(data : dict):
+def save_storage_data(data : dict) -> None:
     with open(storage_data, "w",encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 """Creating one warehouse in JSON"""
-def create_warehouse(warehouse: Warehouse):
+def create_warehouse(warehouse: Warehouse) -> None:
     warehouse_id = warehouse.warehouse_id
     name = warehouse.name
     address_name = warehouse.address_name
@@ -186,7 +186,7 @@ def create_warehouse(warehouse: Warehouse):
     save_storage_data(data)
 
 """Creating one shelf in warehouse (JSON)"""
-def create_shelf(warehouse_id: int, shelf: Shelf):
+def create_shelf(warehouse_id: int, shelf: Shelf) -> None:
     data = load_storage_data()
 
     for wh in data["warehouses"]:
@@ -231,7 +231,7 @@ def create_shelf(warehouse_id: int, shelf: Shelf):
     raise ValueError(f"Склад с айди {warehouse_id} не найден")
 
 """Searching in all of the warehouses"""
-def search_product(product_id:int):
+def search_product(product_id:int) -> list:
     data = load_storage_data()
     locations = []
     for wh in data["warehouses"]:
@@ -248,7 +248,7 @@ def search_product(product_id:int):
     return locations
 
 """Getting total stock"""
-def get_total_stock(product_id:int):
+def get_total_stock(product_id:int) -> int:
     total_quantity = 0
     for location in search_product(product_id):
         total_quantity += location["quantity"]
@@ -263,10 +263,11 @@ class ProductManager:
         self.products = {}
         self.load_products()
 
+    #I don't know how to annotate
     def get_product_list(self):
         return self.products.values()
 
-    def load_products(self):
+    def load_products(self) -> None:
         if not os.path.exists(PRODUCTS_FILE):
             with open(PRODUCTS_FILE, "w",encoding="utf-8") as f:
                 json.dump({"products": []},f)
@@ -277,30 +278,30 @@ class ProductManager:
             obj = self.dict_to_product(p)
             self.products[obj.product_id] = obj
 
-    def save_products(self):
+    def save_products(self) -> None:
         data = {"products": [self.product_to_dict(p) for p in self.products.values()]}
         with open(PRODUCTS_FILE,"w",encoding="utf-8") as f:
             json.dump(data,f,ensure_ascii=False,indent=4)
 
-    def add_product(self,product: Product):
+    def add_product(self,product: Product) -> None:
         self.products[product.product_id] = product
         self.save_products()
 
-    def get_product(self, product_id:int):
+    def get_product(self, product_id:int) -> Product:
         return self.products.get(product_id)
 
-    def delete_product(self, product_id:int):
+    def delete_product(self, product_id:int) -> None:
         if product_id in self.products:
             del self.products[product_id]
             self.save_products()
 
-    def update_price(self, product_id, new_price):
+    def update_price(self, product_id, new_price) -> None:
         product = self.get_product(product_id)
         if product:
             product.update_price(new_price)
             self.save_products()
 
-    def dict_to_product(self, product):
+    def dict_to_product(self, product) -> Product:
         if product["specific"] == "Smartphone":
             return Smartphone(
                 product["product_id"],product["name"],product["price"],product["model"],
@@ -321,7 +322,8 @@ class ProductManager:
             return Product(
                 product["product_id"],product["name"],product["price"]
             )
-    def product_to_dict(self, product):
+
+    def product_to_dict(self, product) -> dict:
         base = {
             "product_id": product.product_id,
             "name": product.name,

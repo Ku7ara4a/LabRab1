@@ -8,7 +8,7 @@ class OrderManager:
         self.orders_file = orders_file
         self._ensure_file_exists()
 
-    def _ensure_file_exists(self):
+    def _ensure_file_exists(self) -> None:
         for file_path in [self.carts_file, self.orders_file]:
             if not os.path.exists(file_path):
                 print(f"Файл {file_path} не существовал, создаю заново")

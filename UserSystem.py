@@ -17,12 +17,12 @@ class User:
         self._load_cart_from_file()
         self._load_orders_from_file()
 
-    def _load_cart_from_file(self):
+    def _load_cart_from_file(self) -> None:
         cart_items = self.order_manager.load_cart(self.user_id)
         self.cart.items = cart_items.get('items',{}).copy()
         self.cart.cost = cart_items.get('cost',0)
 
-    def _load_orders_from_file(self):
+    def _load_orders_from_file(self) -> None:
         self.orders = []
         orders_data = self.order_manager.get_orders_by_user_id(self.user_id)
         if orders_data:
@@ -35,7 +35,7 @@ class User:
             order = Order.from_dict(self, order_data)
             self.orders.append(order)
 
-    def make_an_order(self, stock_manager):#stock_manager can be Warehouse or StockManager
+    def make_an_order(self, stock_manager) -> bool:#stock_manager can be Warehouse or StockManager
         can_reserve_all = True
         if self.cart.is_empty():
             print("Корзина пустая")
@@ -83,11 +83,9 @@ class User:
             print(f"Ошибка при создании заказа: {e}")
             return False
 
-
-    def add_product_to_cart(self, product: Product, quantity: int):
+    def add_product_to_cart(self, product: Product, quantity: int) -> None:
         self.cart.add_item(product, quantity)
         self.cart.save_to_file()
-
 
 class Cart:
     def __init__(self, user: User):
@@ -95,22 +93,21 @@ class Cart:
         self.items = {} #{product_id : quantity}
         self.cost = 0
 
-    def add_item(self, product: Product, quantity: int):
+    def add_item(self, product: Product, quantity: int) -> None:
         product_id = str(product.product_id)
         file_quantity = self.items.get(product_id,0)
         self.items[product_id] = file_quantity + quantity
         self.cost += quantity * product.price
         self.save_to_file()
 
-
-    def remove_item(self, product: Product):
+    def remove_item(self, product: Product) -> None:
         if product.product_id in self.items:
             quantity = self.items[product.product_id]
             self.cost -= quantity * product.price
             del self.items[product.product_id]
             self.save_to_file()
 
-    def update_item_quantity(self, product: Product, new_quantity: int):
+    def update_item_quantity(self, product: Product, new_quantity: int) -> None:
         product_id = str(product.product_id)
         if product_id in self.items.keys():
             old_quantity = self.items[product_id]
@@ -121,19 +118,18 @@ class Cart:
         else:
             print(f"Товар {product.name} отсутствует в корзине {self.user.name}")
 
-
-    def clear(self):
+    def clear(self) -> None:
         self.cost = 0
         self.items = {}
         self.save_to_file()
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return self.items == {}
 
-    def get_cost(self):
+    def get_cost(self) -> int:
         return self.cost
 
-    def save_to_file(self):
+    def save_to_file(self) -> None:
         cart_items = {
             "items": self.items,
             "cost": self.cost
@@ -164,7 +160,7 @@ class Order:
                   f"со склада {self.warehouse_id} для заказа пользователя {user.name}")
 
     @classmethod
-    def _initialize_counter(cls):
+    def _initialize_counter(cls) -> None:
         try:
             order_manager = OrderManager()
             orders = order_manager.load_orders()
@@ -179,6 +175,7 @@ class Order:
             cls._initialized = True
             cls._order_id_counter = 0
 
+    #I don't know how to annotate this one
     @classmethod
     def from_dict(cls, user:User, order_data:dict):
         order = cls.__new__(cls)
@@ -195,7 +192,7 @@ class Order:
 
         order._restore_stock_manager()
 
-        return order
+        return order #
 
     def to_dict(self) -> dict:
         return {
@@ -209,7 +206,7 @@ class Order:
             "warehouse_id": self.warehouse_id
         }
 
-    def save_to_file(self):
+    def save_to_file(self) -> None:
         self.user.order_manager.save_order(self.order_id,self.to_dict())
 
     def _restore_stock_manager(self) -> bool:
@@ -226,7 +223,7 @@ class Order:
             return False
         return True
 
-    def cancel_order(self):
+    def cancel_order(self) -> None:
         if self.status == "Создан":
             self.status = "Отменён"
             for item in self.items.keys():
@@ -237,7 +234,7 @@ class Order:
         else:
             print(f"Невозможно отменить заказ со статусом {self.status}")
 
-    def finish_order(self):
+    def finish_order(self) -> None:
         if self.status == "Создан":
             self.status = "Получен"
             for item in self.items.keys():

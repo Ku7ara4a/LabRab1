@@ -52,7 +52,8 @@ product_manager.add_product(product1)
 product_manager.add_product(product2)
 product_manager.add_product(product3)
 
-global_manager = GlobalStockManager(warehouses)
+"""global_manager = GlobalStockManager(warehouses) #May dele this
+"""
 
 #Replanishing Products to warehouses (there is some more than it can fit)
 manager1.replenish(product1, 15)
@@ -73,12 +74,12 @@ print(Ivan.cart.items)
 
 #Playing with Orders
 Denis = users[0]
-Denis.add_product_to_cart(product1, 21)
+Denis.add_product_to_cart(product1, 20)
 Denis.add_product_to_cart(product2, 3)
 input("Enter any key to continue...")
 Denis.make_an_order(warehouses[0])
 input("Enter any key to continue...")
-Denis.orders[-1].finish_order()
+Denis.orders[-1].cancel_order()
 
 manager1.save_to_json()
 manager2.save_to_json()

@@ -1,9 +1,4 @@
 #Address Class
-import json
-import os
-from itertools import product
-
-
 class Address:
     def __init__(self, name: str, pos: float,spec: str):
         self.name = name
@@ -84,23 +79,20 @@ class ShelfCell:
             return True
         return False
 
-    def release(self,quantity: int) -> bool:
+    def release(self,quantity: int) -> None:
         self.reserved = max(0, self.reserved - quantity)
 
-    def finalize(self,quantity: int) -> bool:
+    def finalize(self,quantity: int) -> None:
         if self.reserved >= quantity:
             self.quantity -= quantity
             self.reserved -= quantity
-
-    def is_available(self) -> bool:
-        return self.quantity < self.max_quantity
-
 
 class Shelf:
     def __init__(self, shelf_id: int, num_cells: int, cell_capacity: int):
         self.shelf_id = shelf_id
         self.cells = [ShelfCell(i + 1, cell_capacity) for i in range(num_cells)]
 
+    #adding product to cell in quantity (made to work with hands)
     def add_product(self, product: Product, quantity: int) -> int:
         remaining = quantity
         for cell in self.cells:
@@ -122,6 +114,7 @@ class Shelf:
 
         return remaining
 
+    #delete product from cell in quantity (made to work with hands)
     def get_product(self, product: Product, quantity: int) -> bool:
         for cell in self.cells:
             if cell.product and cell.product.product_id == product.product_id:
@@ -147,7 +140,7 @@ class Warehouse:
         self.shelves = []
         self.address_name = address_name
 
-    def add_shelf(self, shelf: Shelf):
+    def add_shelf(self, shelf: Shelf) -> None:
         self.shelves.append(shelf)
 
     def get_stock(self, product_id) -> int:
@@ -156,15 +149,16 @@ class Warehouse:
             total_amount += shelf.all_available(product_id)
         return total_amount
 
-    def find_product(self, product: Product):
+    #looking for cells with specific product (made to work with hands)
+    def find_product(self, product: Product) -> list:
         cells_of_product = []
         for shelf in self.shelves:
             for cell in shelf.cells:
                 if cell.product and cell.product.product_id == product.product_id:
                     cells_of_product.append((shelf.shelf_id, cell.cell_id, cell.quantity))
-        return cells_of_product
+        return cells_of_product#Find cells
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             "warehouse_id": self.warehouse_id,
             "name": self.name,
@@ -228,8 +222,7 @@ class StockManager:
                     if cell.reserved > 0:
                         to_finalize = min(cell.reserved, remaining)
                         if to_finalize > 0:
-                            cell.quantity -= to_finalize
-                            cell.reserved -= to_finalize
+                            cell.finalize(to_finalize)
                             remaining -= to_finalize
                             if cell.quantity == 0:
                                 cell.product = 0
@@ -288,7 +281,7 @@ class StockManager:
             return False
         return True
 
-    def save_to_json(self):
+    def save_to_json(self) -> None:
         from FileManager import save_storage_data, load_storage_data
         data = load_storage_data()
         warehouse_dict = self.warehouse.to_dict()
@@ -300,8 +293,8 @@ class StockManager:
         data["warehouses"].append(warehouse_dict)
         save_storage_data(data)
 
-
-class GlobalStockManager:
+#mostly useless class, just to check between warehouses (haven't been updated to work with JSON)
+"""class GlobalStockManager:
     def __init__(self, warehouses):
         self.warehouses = warehouses
 
@@ -368,8 +361,10 @@ class GlobalStockManager:
             return True
         print(f"Недостаточно {product.name} на всех складах для снятия с резерва")
         return False
+"""
 
-"""Satatic class for StockManagers saving to file"""
+"""Mostly static class, a little Registry to not lose StockManagers in orders while saving
+   them into json file"""
 class StockManagerRegistry:
     _instance = None
     _stock_managers = {}
@@ -390,5 +385,6 @@ class StockManagerRegistry:
     def get_by_warehouse_id(self, warehouse_id: int) -> StockManager:
         return self._warehouse_to_manager.get(warehouse_id)
 
+    #Haven't been used, but have some potencial
     def get_all(self):
         return self._stock_managers.values()
