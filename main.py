@@ -73,13 +73,12 @@ print(Ivan.cart.items)
 
 #Playing with Orders
 Denis = users[0]
-Denis.add_product_to_cart(product1, 10)
+Denis.add_product_to_cart(product1, 21)
 Denis.add_product_to_cart(product2, 3)
 input("Enter any key to continue...")
 Denis.make_an_order(warehouses[0])
 input("Enter any key to continue...")
 Denis.orders[-1].finish_order()
-
 
 manager1.save_to_json()
 manager2.save_to_json()

@@ -35,22 +35,24 @@ class User:
             order = Order.from_dict(self, order_data)
             self.orders.append(order)
 
-    def make_an_order(self, stock_manager): #stock_manager can be Warehouse or StockManager
+    def make_an_order(self, stock_manager):#stock_manager can be Warehouse or StockManager
+        can_reserve_all = True
         if self.cart.is_empty():
             print("Корзина пустая")
-            return None
+            return False
         if isinstance(stock_manager, Warehouse):
             stock_manager = StockManager(stock_manager)
         for product_id, quantity in self.cart.items.items():
             quantity_available = stock_manager.check_stock(int(product_id))
             if quantity_available == 0:
                 print(f"Товара с айди {product_id} нет в наличии на складе {stock_manager.warehouse.name}")
-                return False
+                can_reserve_all = False
+                break
             if quantity_available < quantity:
                 print(f"Товара с айди {product_id} не достаточно на складе {stock_manager.warehouse.name}")
-                return False
+                can_reserve_all = False
+                break
 
-        can_reserve_all = True
         for product_id, quantity in self.cart.items.items():
             temp_available = 0
             for shelf in stock_manager.warehouse.shelves:
@@ -64,7 +66,9 @@ class User:
                 break
 
         if not can_reserve_all:
-            print("Невозможно создать заказ: не все товары можно зарезервировать")
+            print(f"Невозможно создать заказ: не все товары можно зарезервировать, "
+                  f"корзина пользователя {self.name} была обнулена")
+            self.cart.clear()
             return False
 
         try:

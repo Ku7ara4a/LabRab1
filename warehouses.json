@@ -10,9 +10,9 @@
                     "cells": [
                         {
                             "cell_id": 1,
-                            "product_id": null,
-                            "product_name": null,
-                            "quantity": 0,
+                            "product_id": 1,
+                            "product_name": "Ноутбук Леново",
+                            "quantity": 10,
                             "max_quantity": 10,
                             "reserved": 0
                         },
@@ -28,7 +28,7 @@
                             "cell_id": 3,
                             "product_id": 2,
                             "product_name": "Телефон Крутофон",
-                            "quantity": 7,
+                            "quantity": 10,
                             "max_quantity": 10,
                             "reserved": 0
                         }
