@@ -10,17 +10,17 @@
                     "cells": [
                         {
                             "cell_id": 1,
-                            "product_id": null,
-                            "product_name": null,
-                            "quantity": 0,
+                            "product_id": 1,
+                            "product_name": "Ноутбук Леново",
+                            "quantity": 10,
                             "max_quantity": 10,
-                            "reserved": 0
+                            "reserved": 7
                         },
                         {
                             "cell_id": 2,
-                            "product_id": null,
-                            "product_name": null,
-                            "quantity": 0,
+                            "product_id": 1,
+                            "product_name": "Ноутбук Леново",
+                            "quantity": 10,
                             "max_quantity": 10,
                             "reserved": 0
                         },
@@ -91,9 +91,9 @@
                     "cells": [
                         {
                             "cell_id": 1,
-                            "product_id": null,
-                            "product_name": null,
-                            "quantity": 0,
+                            "product_id": 1,
+                            "product_name": "Ноутбук Леново",
+                            "quantity": 4,
                             "max_quantity": 4,
                             "reserved": 0
                         },
@@ -101,7 +101,7 @@
                             "cell_id": 2,
                             "product_id": 1,
                             "product_name": "Ноутбук Леново",
-                            "quantity": 3,
+                            "quantity": 4,
                             "max_quantity": 4,
                             "reserved": 0
                         },

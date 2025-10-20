@@ -63,11 +63,28 @@ manager1.replenish(product1, 20)
 
 #Reserving in one warehouse
 """manager1.reserve(product1,35)
-manager1.finalize_reservation(product1,20)"""
+n = input()
+manager1.release_reservation(product1,20)
+"""
 
 #Global reserving
-global_manager.reserve_product(product1,25)
+"""global_manager.reserve_product(product1,25)
 global_manager.finalize_reservation(product1,25)
+"""
+
+#Checking products
+"""print("Проверка количества продуктов на всех складах:")
+for wh in warehouses:
+    print(f"Склад {wh.name}")
+    for product in product_manager.get_product_list():
+        print(f"{product.name} х {wh.get_stock(product)}")
+"""
+
+#Making an order
+Denis = users[0]
+Denis.add_product_to_cart(product1, 7)
+Denis.make_an_order(manager1)
+
 
 #Final saving
 manager1.save_to_json()

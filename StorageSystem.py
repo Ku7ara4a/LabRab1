@@ -132,10 +132,10 @@ class Shelf:
                 quantity -= take
         return quantity == 0
 
-    def all_available(self, product: Product) -> int:
+    def all_available(self, product_id: int) -> int:
         total_amount = 0
         for cell in self.cells:
-            if cell.product and cell.product.product_id == product.product_id:
+            if cell.product and cell.product.product_id == product_id:
                 total_amount += cell.quantity
         return total_amount
 
@@ -150,10 +150,10 @@ class Warehouse:
     def add_shelf(self, shelf: Shelf):
         self.shelves.append(shelf)
 
-    def get_stock(self, product: Product) -> int:
+    def get_stock(self, product_id) -> int:
         total_amount = 0
         for shelf in self.shelves:
-            total_amount += shelf.all_available(product)
+            total_amount += shelf.all_available(product_id)
         return total_amount
 
     def find_product(self, product: Product):
@@ -194,11 +194,10 @@ class StockManager:
         self.warehouse = warehouse
         self.data_file= "warehouses.json"
 
-    def check_stock(self, product: Product) -> int:
-        return self.warehouse.get_stock(product)
+    def check_stock(self, product_id: int) -> int:
+        return self.warehouse.get_stock(product_id)
 
-    def reserve(self, product: Product, quantity: int) -> bool:
-        product_id = product.product_id
+    def reserve(self, product_id:int, quantity: int) -> bool:
         remaining = quantity
         for shelf in self.warehouse.shelves:
             for cell in shelf.cells:
@@ -213,7 +212,7 @@ class StockManager:
                                 return True
         self.save_to_json()
         if remaining > 0:
-            print(f"Не удалось зарезервировать {product.name} не было зарезервировано {remaining}")
+            print(f"Не удалось зарезервировать товар с айди {product_id} не было зарезервировано {remaining}")
             return False
         return True
 
@@ -241,9 +240,8 @@ class StockManager:
             return False
         return True
 
-    def release_reservation(self, product: Product, quantity) -> bool:
+    def release_reservation(self, product_id, quantity) -> bool:
         remaining = quantity
-        product_id = product.product_id
         for shelf in self.warehouse.shelves:
             for cell in shelf.cells:
                 if cell.product and cell.product.product_id == product_id:

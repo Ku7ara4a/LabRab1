@@ -1,4 +1,5 @@
-from StorageSystem import Product
+from StorageSystem import Product, Warehouse, StockManager
+
 """Classes for Users System"""
 class User:
     def __init__(self, user_id: int, name: str, surname: str, email: str, password: str,address_name: str):
@@ -11,14 +12,33 @@ class User:
         self.cart = Cart(self)
         self.orders = []
 
-    def make_an_order(self):
+    def make_an_order(self, stock_manager): #stock_manager can be Warehouse or StockManager
         if self.cart.is_empty():
             print("Корзина пустая")
             return None
-        order = Order(self, self.cart)
-        self.orders.append(order)
-        self.cart.clear()
-        return order
+        if isinstance(stock_manager, Warehouse):
+            stock_manager = StockManager(stock_manager)
+        for product_id, quantity in self.cart.items.items():
+            quantity_available = stock_manager.check_stock(product_id)
+            if quantity_available == 0:
+                print(f"Товара с айди {product_id} нет в наличии на складе {stock_manager.warehouse.name}")
+                return False
+            if quantity_available < quantity:
+                print(f"Товара с айди {product_id} не достаточно на складе {stock_manager.warehouse.name}")
+                return False
+            if quantity_available >= quantity:
+                if not stock_manager.reserve(product_id, quantity):
+                    print(f"Товар с айди {product_id} не достаточно для резервации на складе {stock_manager.warehouse.name}")
+                    stock_manager.release_reservation(product_id, quantity)
+                    return False
+                order = Order(self,stock_manager)
+                return True
+        return False
+
+
+    def add_product_to_cart(self, product: Product, quantity: int):
+        self.cart.add_item(product, quantity)
+
 
 class Cart:
     def __init__(self, user: User):
@@ -47,13 +67,14 @@ class Cart:
         return self.cost
 
 class Order:
-    def __init__(self, user: User, cart: Cart):
+    def __init__(self, user: User, stock_manager: StockManager):
         self.user = user
-        self.items = cart.items
+        self.items = user.cart.items
         self.status = "Создан"
-        self.cost = cart.cost
-        for item in self.items.values():
-            print(item)
+        self.cost = user.cart.cost
+        for item in self.items.keys():
+            print(f"Товар c айди {item} в количестве {self.items[item]}шт. был зарезервирован "
+                  f"для заказа пользователя {user.name}")
 
     def update_status(self, new_status: str):
         self.status = new_status

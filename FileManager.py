@@ -263,6 +263,9 @@ class ProductManager:
         self.products = {}
         self.load_products()
 
+    def get_product_list(self):
+        return self.products.values()
+
     def load_products(self):
         if not os.path.exists(PRODUCTS_FILE):
             with open(PRODUCTS_FILE, "w",encoding="utf-8") as f:
