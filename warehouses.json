@@ -10,21 +10,27 @@
                     "cells": [
                         {
                             "cell_id": 1,
-                            "product_id": 2,
-                            "quantity": 10,
-                            "max_quntity": 10
+                            "product_id": null,
+                            "product_name": null,
+                            "quantity": 0,
+                            "max_quantity": 10,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 2,
-                            "product_id": 2,
-                            "quantity": 10,
-                            "max_quntity": 10
+                            "product_id": null,
+                            "product_name": null,
+                            "quantity": 0,
+                            "max_quantity": 10,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 3,
                             "product_id": 2,
+                            "product_name": "Телефон Крутофон",
                             "quantity": 10,
-                            "max_quntity": 10
+                            "max_quantity": 10,
+                            "reserved": 0
                         }
                     ]
                 },
@@ -34,32 +40,42 @@
                         {
                             "cell_id": 1,
                             "product_id": 2,
+                            "product_name": "Телефон Крутофон",
                             "quantity": 3,
-                            "max_quntity": 3
+                            "max_quantity": 3,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 2,
                             "product_id": 2,
+                            "product_name": "Телефон Крутофон",
                             "quantity": 3,
-                            "max_quntity": 3
+                            "max_quantity": 3,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 3,
                             "product_id": 2,
+                            "product_name": "Телефон Крутофон",
                             "quantity": 3,
-                            "max_quntity": 3
+                            "max_quantity": 3,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 4,
                             "product_id": 2,
+                            "product_name": "Телефон Крутофон",
                             "quantity": 3,
-                            "max_quntity": 3
+                            "max_quantity": 3,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 5,
                             "product_id": 2,
+                            "product_name": "Телефон Крутофон",
                             "quantity": 3,
-                            "max_quntity": 3
+                            "max_quantity": 3,
+                            "reserved": 0
                         }
                     ]
                 }
@@ -76,32 +92,42 @@
                         {
                             "cell_id": 1,
                             "product_id": null,
+                            "product_name": null,
                             "quantity": 0,
-                            "max_quantity": 4
+                            "max_quantity": 4,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 2,
-                            "product_id": null,
-                            "quantity": 0,
-                            "max_quantity": 4
+                            "product_id": 1,
+                            "product_name": "Ноутбук Леново",
+                            "quantity": 3,
+                            "max_quantity": 4,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 3,
-                            "product_id": null,
-                            "quantity": 0,
-                            "max_quantity": 4
+                            "product_id": 1,
+                            "product_name": "Ноутбук Леново",
+                            "quantity": 2,
+                            "max_quantity": 4,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 4,
                             "product_id": null,
+                            "product_name": null,
                             "quantity": 0,
-                            "max_quantity": 4
+                            "max_quantity": 4,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 5,
                             "product_id": null,
+                            "product_name": null,
                             "quantity": 0,
-                            "max_quantity": 4
+                            "max_quantity": 4,
+                            "reserved": 0
                         }
                     ]
                 },
@@ -111,14 +137,18 @@
                         {
                             "cell_id": 1,
                             "product_id": null,
+                            "product_name": null,
                             "quantity": 0,
-                            "max_quantity": 5
+                            "max_quantity": 5,
+                            "reserved": 0
                         },
                         {
                             "cell_id": 2,
                             "product_id": null,
+                            "product_name": null,
                             "quantity": 0,
-                            "max_quantity": 5
+                            "max_quantity": 5,
+                            "reserved": 0
                         }
                     ]
                 }
