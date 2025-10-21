@@ -63,6 +63,7 @@ manager1.replenish(product2, 30)
 manager1.replenish(product1, 20)
 
 #Playing with carts
+"""print("Работа функции изменения количества товара в корзине")
 Ivan = users[1]
 Ivan.add_product_to_cart(product1, 3)
 print("Содержимое корзины")
@@ -70,16 +71,24 @@ print(Ivan.cart.items)
 Ivan.cart.update_item_quantity(product1,10)
 Ivan.add_product_to_cart(product2,3)
 print("Содержимое корзины")
-print(Ivan.cart.items)
+print(Ivan.cart.items)"""
 
 #Playing with Orders
+print("Работа системы заказов, количество товара на складе можно посмотреть"
+      " в файле warehouses.json")
 Denis = users[0]
 Denis.add_product_to_cart(product1, 20)
 Denis.add_product_to_cart(product2, 3)
+print("Содержимое корзины до создания заказа")
+print(Denis.cart.items)
+
 input("Enter any key to continue...")
 Denis.make_an_order(warehouses[0])
+print("Содержимое корзины после создания заказа")
+print(Denis.cart.items)
+
 input("Enter any key to continue...")
-Denis.orders[-1].cancel_order()
+Denis.orders[-1].finish_order()
 
 manager1.save_to_json()
 manager2.save_to_json()
