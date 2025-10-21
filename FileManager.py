@@ -47,7 +47,7 @@ def load_users_from_xml(filename:str) -> list:
     return users
 
 """Load single user from XML"""
-def load_single_users_from_xml(filename:str,user_id: int) -> User:
+def load_single_users_from_xml(filename:str,user_id: int) -> User or None:
     tree = ET.parse(filename)
     root = tree.getroot()
     user : User
