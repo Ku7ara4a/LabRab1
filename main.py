@@ -5,7 +5,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('app.log', encoding='utf-8'),
-        logging.StreamHandler()
+        """logging.StreamHandler()""" # Turn if Test, Off if user
     ]
 )
 
