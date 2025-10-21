@@ -256,4 +256,3 @@ class Order:
     @classmethod
     def set_order_id_counter(cls, count : int) -> None:
         cls._order_id_counter = count
-
