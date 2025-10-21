@@ -1,11 +1,18 @@
-#Address Class
 class Address:
+    """
+    Address Class used just to save addresses
+    """
+
     def __init__(self, name: str, pos: float,spec: str):
         self.name = name
         self.pos = pos
         self.spec = spec
-#Product Abstract Class
+
 class Product:
+    """
+    Product Class
+    """
+
     def __init__(self, product_id: int, name: str, price: float):
         self.product_id = product_id
         self.name = name
@@ -14,26 +21,54 @@ class Product:
     def update_price(self, new_price: float):
         self.price = new_price
 
+class Electronic(Product):
+    """
+    Electronic product
+    """
 
-class Electronic(Product):  #Абстрактный класс электроники
-    def __init__(self, product_id: int, name: str, price: float, model: str, power: float):
+    def __init__(self,
+                 product_id: int,
+                 name: str,
+                 price: float,
+                 model: str,
+                 power: float):
         super().__init__(product_id, name, price)
         self.model = model
         self.power = power
 
+class Smartphone(Electronic):
+    """
+    Smartphone product
+    """
 
-class Smartphone(Electronic):  #Класс телефонов
-    def __init__(self, product_id: int, name: str, price: float, model: str, power: float, memory: int, battery: int,
+    def __init__(self,
+                 product_id: int,
+                 name: str,
+                 price: float,
+                 model: str,
+                 power: float,
+                 memory: int,
+                 battery: int,
                  os: str):
         super().__init__(product_id, name, price, model, power)
         self.os = os
         self.battery = battery
         self.memory = memory
 
+class Laptop(Electronic):
 
-class Laptop(Electronic):  #Класс ноутбуков
-    def __init__(self, product_id: int, name: str, price: float, model: str, power: float, ram: int, processor: str,
-                 storage: int, screen_size: str):
+    """Laptop product"""
+
+    def __init__(self,
+                 product_id: int,
+                 name: str,
+                 price: float,
+                 model: str,
+                 power: float,
+                 ram: int,
+                 processor: str,
+                 storage: int,
+                 screen_size: str):
         super().__init__(product_id, name, price, model, power)
         self.ram = ram
         self.processor = processor
@@ -132,7 +167,6 @@ class Shelf:
                 total_amount += cell.quantity
         return total_amount
 
-
 class Warehouse:
     def __init__(self, warehouse_id: int, name: str,address_name:str):
         self.warehouse_id = warehouse_id
@@ -182,12 +216,11 @@ class Warehouse:
             ]
         }
 
-
 class StockManager:
-    _stock_manager_id_ = 0
+    _stock_manager_id = 0
     def __init__(self, warehouse: Warehouse):
-        StockManager._stock_manager_id_ +=1
-        self.stock_manager_id = StockManager._stock_manager_id_
+        StockManager._stock_manager_id +=1
+        self.stock_manager_id = StockManager._stock_manager_id
         self.warehouse = warehouse
         self.data_file= "warehouses.json"
         StockManagerRegistry().register(self)

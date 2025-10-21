@@ -1,6 +1,10 @@
 from datetime import datetime
+import logging
+
 from StorageSystem import Product, Warehouse, StockManager
 from CartsAndOrdersManager import OrderManager
+
+logger = logging.getLogger(__name__)
 
 """Classes for Users System"""
 class User:
@@ -28,9 +32,9 @@ class User:
         if orders_data:
             max_order_id = max(int(order_data['order_id']) for order_data in orders_data)
             if hasattr(Order,'_order_id_counter'):
-                Order._order_id_counter = max(Order._order_id_counter, max_order_id)
+                Order.set_order_id_counter(max(Order.get_order_id_counter(), max_order_id))
             else:
-                Order._order_id_counter = max_order_id
+                Order.set_order_id_counter(max_order_id)
         for order_data in orders_data:
             order = Order.from_dict(self, order_data)
             self.orders.append(order)
@@ -80,7 +84,7 @@ class User:
             return True
 
         except Exception as e:
-            print(f"Ошибка при создании заказа: {e}")
+            logger.error(f"Exception occurred while making an order: {e}")
             return False
 
     def add_product_to_cart(self, product: Product, quantity: int) -> None:
@@ -156,7 +160,7 @@ class Order:
         self.date = datetime.now().isoformat()
         for item in self.items.keys():
             stock_manager.reserve(int(item),self.items[item])
-            print(f"Товар c айди {item} в количестве {self.items[item]}шт. был зарезервирован "
+            logger.info(f"Товар c айди {item} в количестве {self.items[item]}шт. был зарезервирован "
                   f"со склада {self.warehouse_id} для заказа пользователя {user.name}")
 
     @classmethod
@@ -171,7 +175,7 @@ class Order:
                 cls._order_id_counter = 0
             cls._initialized = True
         except Exception as e:
-            print(f"Ошибка инициализации счётчика заказов: {e}")
+            logging.error(f"Exception occurred while initializing counter: {e}")
             cls._initialized = True
             cls._order_id_counter = 0
 
@@ -219,7 +223,7 @@ class Order:
             self.stock_manager = registry.get_by_warehouse_id(self.warehouse_id)
             return True
         if self.stock_manager is None:
-            print(f"Ошибка при поиске StockManager для заказа {self.order_id}")
+            logger.error(f"An error occurred while retrieving stock manager: {self.warehouse_id}")
             return False
         return True
 
@@ -244,4 +248,12 @@ class Order:
                 self.save_to_file()
         else:
             print(f"Невозможно получить заказ со статусом {self.status}")
+
+    @classmethod
+    def get_order_id_counter(cls) -> int:
+        return cls._order_id_counter
+
+    @classmethod
+    def set_order_id_counter(cls, count : int) -> None:
+        cls._order_id_counter = count
 

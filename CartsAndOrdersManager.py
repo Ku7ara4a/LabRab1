@@ -1,8 +1,16 @@
 import json
 import os
+import logging
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
+
 class OrderManager:
+    """
+    Class to work with
+    Saving, loading and deleting
+    Carts and Orders to JSON
+    """
     def __init__(self, carts_file : str = "carts.json", orders_file : str = "orders.json"):
         self.carts_file = carts_file
         self.orders_file = orders_file
@@ -11,7 +19,7 @@ class OrderManager:
     def _ensure_file_exists(self) -> None:
         for file_path in [self.carts_file, self.orders_file]:
             if not os.path.exists(file_path):
-                print(f"Файл {file_path} не существовал, создаю заново")
+                logger.info(f"File {file_path} not found, creating a new one...")
                 with open(file_path, "w", encoding="utf-8") as file:
                     json.dump({}, file, ensure_ascii=False, indent=4)
             else:
@@ -19,13 +27,14 @@ class OrderManager:
                     with open(file_path, "r", encoding="utf-8") as file:
                         content = file.read()
                         if not content.strip():
-                            print(f"Файл {file_path} пустой, инициализирую")
+                            logger.info(f"File {file_path} is empty, creating a new one...")
                             with open(file_path, "w", encoding="utf-8") as f:
                                 json.dump({}, f, ensure_ascii=False, indent=4)
                         else:
                             json.loads(content)
                 except Exception as e:
-                    print(f"Файл {file_path} поврежден, пересоздаю: {e}")
+                    logger.error(f"File {file_path} is damaged : "
+                                f"{e}, creating a new one...")
                     with open(file_path, "w", encoding="utf-8") as f:
                         json.dump({}, f, ensure_ascii=False, indent=4)
 
@@ -43,7 +52,7 @@ class OrderManager:
                 json.dump(all_carts, file,ensure_ascii=False, indent=4)
             return True
         except Exception as e:
-            print("Ошибка сохранения корзины")
+            logger.error(f"Failed to save cart {user_id}: {e}")
             return False
 
     def load_cart(self, user_id: int) -> dict:
@@ -53,7 +62,7 @@ class OrderManager:
 
             return all_carts.get(str(user_id), {'items': {}, 'cost': 0})
         except Exception as e:
-            print("Ошибка загрузки корзины")
+            logger.error(f"Failed to load cart {user_id}: {e}")
             return {'items': {}, 'cost': 0}
 
     def save_order(self, order_id: int, order_data: dict) -> bool:
@@ -67,7 +76,7 @@ class OrderManager:
                 json.dump(all_orders, file, ensure_ascii=False, indent=4)
             return True
         except Exception as e:
-            print(f"Ошибка сохранения заказов {e}")
+            logger.error(f"Failed to save order {order_id}: {e}")
             return False
 
     def load_orders(self) -> dict:
@@ -76,7 +85,7 @@ class OrderManager:
                 orders = json.load(file)
             return orders
         except Exception as e:
-            print("Ошибка при загрузке заказов")
+            logger.error(f"Failed to load orders: {e}")
             return {}
 
     def get_orders_by_user_id(self, user_id: int) -> list:
@@ -100,5 +109,5 @@ class OrderManager:
                 json.dump(all_carts, file)
             return True
         except Exception as e:
-            print("Ошибка при удалении корзины")
+            logger.error(f"Failed to delete cart {user_id}: {e}")
             return False

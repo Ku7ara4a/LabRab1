@@ -24,5 +24,122 @@
         "cost": 1110400,
         "stock_manager_id": 3,
         "warehouse_id": 1
+    },
+    "3": {
+        "order_id": 3,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T02:14:18.750439",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "4": {
+        "order_id": 4,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T02:45:08.420978",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "5": {
+        "order_id": 5,
+        "user_id": 1,
+        "status": "Отменён",
+        "date": "2025-10-21T02:45:57.244304",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "6": {
+        "order_id": 6,
+        "user_id": 1,
+        "status": "Отменён",
+        "date": "2025-10-21T02:46:16.520846",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "7": {
+        "order_id": 7,
+        "user_id": 1,
+        "status": "Отменён",
+        "date": "2025-10-21T08:56:26.570990",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "8": {
+        "order_id": 8,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T08:56:59.547441",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "9": {
+        "order_id": 9,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T08:58:30.848097",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "10": {
+        "order_id": 10,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T08:59:00.707268",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
+    },
+    "11": {
+        "order_id": 11,
+        "user_id": 1,
+        "status": "Получен",
+        "date": "2025-10-21T10:06:01.865043",
+        "items": {
+            "1": 20,
+            "2": 3
+        },
+        "cost": 2112800,
+        "stock_manager_id": 3,
+        "warehouse_id": 1
     }
 }
