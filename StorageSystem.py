@@ -18,7 +18,7 @@ class Product:
         self.name = name
         self.price = price
 
-    def update_price(self, new_price: float):
+    def update_price(self, new_price: float) -> None:
         self.price = new_price
 
 class Electronic(Product):
@@ -74,7 +74,6 @@ class Laptop(Electronic):
         self.processor = processor
         self.storage = storage
         self.screen_size = screen_size
-
 
 """Classes for Storage System"""
 class ShelfCell:

@@ -299,7 +299,7 @@ class ProductManager:
             del self.products[product_id]
             self.save_products()
 
-    def update_price(self, product_id: int, new_price: int) -> None:
+    def update_price(self, product_id: int, new_price: float) -> None:
         product = self.get_product(product_id)
         if product:
             product.update_price(new_price)
@@ -327,7 +327,7 @@ class ProductManager:
                 product["product_id"],product["name"],product["price"]
             )
 
-    def product_to_dict(self, product) -> dict:
+    def product_to_dict(self, product: Product) -> dict:
         base = {
             "product_id": product.product_id,
             "name": product.name,
